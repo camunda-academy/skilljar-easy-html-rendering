@@ -31,6 +31,8 @@
   th,td { border:1px solid var(--line); padding:.4rem .8rem; text-align:left; }
   details.answer { border:1px dashed var(--line); border-radius:6px; margin:1rem 0; }
   details.answer > :not(summary) { margin-left:1rem; margin-right:1rem; }
+  blockquote:has(+ details.answer) { margin-bottom:0; border-radius:6px 6px 0 0; }
+  blockquote + details.answer { margin-top:0; border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:0 0 6px 6px; }
   .callout { --c:#00a7b5; --bg:#e6f6f8; border:1px solid var(--line); border-left:4px solid var(--c); border-radius:6px; background:var(--bg); margin:1.2rem 0; padding:.1rem 1rem .1rem 1rem; }
   .callout-tip { --c:#1fa463; --bg:#e8f7ef; }
   .callout-warning { --c:#e0861a; --bg:#fff4e3; }
