@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<style>
+  :root { --fg:#1c1c1e; --bg:#fff; --muted:#5f6368; --line:#dadce0; --code:#f6f8fa; --accent:#fc5d0d; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fg:#e8eaed; --bg:#1b1c1f; --muted:#9aa0a6; --line:#3c4043; --code:#0d1117; }
+  }
+  body { font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--fg); background:var(--bg); max-width:50rem; margin:0 auto; padding:1.5rem 1rem 3rem; }
+  h1,h2,h3 { line-height:1.25; }
+  a { color:var(--accent); }
+  code { background:var(--code); padding:.1em .35em; border-radius:4px; font-size:.9em; }
+  pre { background:var(--code); border:1px solid var(--line); border-radius:6px; padding:.9rem 1rem; overflow-x:auto; }
+  pre code { background:none; padding:0; }
+  details.snippet { border:1px solid var(--line); border-radius:6px; margin:1rem 0; }
+  details.snippet > summary { cursor:pointer; padding:.6rem 1rem; font-weight:600; color:var(--muted); list-style:none; }
+  details.snippet > summary::before { content:"\25B6"; display:inline-block; margin-right:.6rem; font-size:.75em; transition:transform .15s; }
+  details.snippet[open] > summary::before { transform:rotate(90deg); }
+  details.snippet > summary::-webkit-details-marker { display:none; }
+  details.snippet > pre { margin:0; border:0; border-top:1px solid var(--line); border-radius:0 0 6px 6px; }
+</style>
+</head>
+<body>
+{{body}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
+</html>
