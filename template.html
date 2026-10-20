@@ -47,7 +47,10 @@
   details.callout[open] > summary { padding-bottom:0; }
   .callout-body > :first-child { margin-top:.4rem; }
   .callout-body > :last-child { margin-bottom:.8rem; }
-  .quiz { --ok:#1a7f37; --ok-bg:#e9f7ee; --bad:#cf222e; --bad-bg:#fdeceb; border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:6px; padding:.2rem 1rem .8rem; margin:1.2rem 0; background:var(--bg); font-size:.9em; }
+  details.quiz-box { --ok:#1a7f37; --ok-bg:#e9f7ee; --bad:#cf222e; --bad-bg:#fdeceb; border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:6px; padding:0 1rem; margin:1.2rem 0; background:var(--bg); font-size:.9em; }
+  details.quiz-box > summary { cursor:pointer; font-weight:600; padding:.6rem 0; }
+  details.quiz-box[open] > summary { padding-bottom:0; }
+  .quiz { padding-bottom:.8rem; }
   .quiz-q { font-weight:600; }
   .quiz-opt { border:1px solid var(--line); border-radius:6px; margin:.5rem 0; }
   .quiz-opt > label { display:flex; gap:.6rem; align-items:flex-start; padding:.55rem .8rem; cursor:pointer; }

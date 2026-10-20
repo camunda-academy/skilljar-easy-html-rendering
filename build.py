@@ -28,7 +28,7 @@ SNIPPET = re.compile(
     re.DOTALL,
 )
 ANSWER = re.compile(r"\{\{<\s*answer\s*>\}\}(?P<body>.*?)\{\{<\s*/answer\s*>\}\}", re.DOTALL)
-QUIZ = re.compile(r"\{\{<\s*quiz\s*>\}\}(?P<body>.*?)\{\{<\s*/quiz\s*>\}\}", re.DOTALL)
+QUIZ = re.compile(r'\{\{<\s*quiz(?:\s+"(?P<title>[^"]*)")?\s*>\}\}(?P<body>.*?)\{\{<\s*/quiz\s*>\}\}', re.DOTALL)
 QUIZ_OPTION = re.compile(r"^- \[( |x|X)\] ?(.*)$")
 # Same syntax as the official converter: !!! type "Title" (always open), ??? (collapsed), ???+ (open).
 ADMONITION = re.compile(
@@ -88,7 +88,7 @@ def inline_md(text):
     return re.sub(r"\A<p>|</p>\Z", "", markdown.markdown(text.strip()).strip())
 
 
-def quiz_html(body, qid):
+def quiz_html(body, qid, title=None):
     """Single-choice quiz: question text, then `- [ ]` / `- [x]` options with indented feedback."""
     question, options = [], []
     for line in body.strip("\n").splitlines():
@@ -108,7 +108,11 @@ def quiz_html(body, qid):
         for ok, answer, fb in options
     )
     q = markdown.markdown("\n".join(question).strip(), extensions=["fenced_code", "sane_lists"])
-    return f'<div class="quiz" role="group" aria-labelledby="quiz{qid}q"><div class="quiz-q" id="quiz{qid}q">{q}</div>{items}</div>'
+    label = html.escape(title or "Challenge")
+    return (
+        f'<details class="quiz-box"><summary>{label}</summary>'
+        f'<div class="quiz" role="group" aria-labelledby="quiz{qid}q"><div class="quiz-q" id="quiz{qid}q">{q}</div>{items}</div></details>'
+    )
 
 
 def admonition_html(m):
@@ -152,7 +156,7 @@ def convert(path):
         return f"\n\nSNIPPETPLACEHOLDER{len(blocks) - 1}END\n\n"
 
     def stash_quiz(m):
-        blocks.append(quiz_html(m.group("body"), len(blocks)))
+        blocks.append(quiz_html(m.group("body"), len(blocks), m.group("title")))
         return f"\n\nSNIPPETPLACEHOLDER{len(blocks) - 1}END\n\n"
 
     def stash_admonition(m):
