@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&display=swap">
 <style>
-  :root { color-scheme:light; --fg:#1c1c1e; --bg:#fff; --muted:#5f6368; --line:#e3e3e3; --code:#f5f5f5; --accent:#fc5d0d; }
+  :root { --ico:1.25rem; color-scheme:light; --fg:#1c1c1e; --bg:#fff; --muted:#5f6368; --line:#e3e3e3; --code:#f5f5f5; --accent:#fc5d0d; }
   body { font:14px/1.55 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--fg); background:var(--bg); max-width:50rem; margin:0 auto; padding:1.5rem 1rem 3rem; }
   html { overflow-x:hidden; }
   .banner { margin:-1.5rem calc(50% - 50vw) 1.5rem; }
@@ -73,6 +73,10 @@
   details.quiz-box[open] > summary, details.callout[open] > summary { padding-bottom:0; }
   details.snippet > summary::after, details.answer > summary::after, details.quiz-box > summary::after, details.callout > summary::after { content:"\25B6"; margin-left:auto; font-size:.7em; color:var(--muted); transition:transform .15s; }
   details[open] > summary::after { transform:rotate(90deg); }
+  details > summary::before { display:inline-block; width:var(--ico); }
+  blockquote > p:first-child > strong:only-child::before { content:"\2753"; display:inline-block; width:var(--ico); margin-right:.6rem; }
+  blockquote > :not(:first-child) { margin-left:calc(var(--ico) + .6rem); }
+  blockquote + details.answer > :not(summary) { margin-left:calc(1rem + var(--ico) + .6rem); }
   details.snippet > summary::before { content:"\1F4CB"; }
   details.answer > summary::before { content:"\1F511"; }
   details.quiz-box > summary::before { content:"\1F3AF"; }
