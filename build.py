@@ -103,9 +103,15 @@ def convert(path):
     for i, block in enumerate(blocks):
         rendered = rendered.replace(f"<p>SNIPPETPLACEHOLDER{i}END</p>", block)
 
+    banner = ""  # a leading image becomes a full-width banner above the title
+    m = re.match(r"\s*(<p>\s*<img [^>]*>\s*</p>)", rendered)
+    if m:
+        banner = f'<div class="banner">{m.group(1)}</div>\n'
+        rendered = rendered[m.end():]
+
     page = (
         TEMPLATE.replace("{{title}}", html.escape(title))
-        .replace("{{body}}", f"<h1>{html.escape(title)}</h1>\n{rendered}")
+        .replace("{{body}}", f"{banner}<h1>{html.escape(title)}</h1>\n{rendered}")
     )
     if path.parent == CONTENT:  # flat: content/<slug>.md -> site/<slug>.html
         href, target = f"{slug}.html", SITE / f"{slug}.html"

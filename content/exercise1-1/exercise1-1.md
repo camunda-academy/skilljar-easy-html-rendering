@@ -2,6 +2,8 @@
 title: Agentic Orchestration E1_1
 ---
 
+![](header.png)
+
 ## Let's start here
 
 *Create and configure the AI agent*
