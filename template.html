@@ -13,6 +13,13 @@
   a { color:var(--accent); }
   code { background:var(--code); padding:.1em .35em; border-radius:4px; font-size:.9em; }
   pre { background:var(--code); border:1px solid var(--line); border-radius:6px; padding:.9rem 1rem; overflow-x:auto; }
+  img { max-width:100%; height:auto; }
+  p:has(> img + img) { display:flex; gap:.75rem; align-items:flex-start; }
+  p:has(> img + img) img { flex:1 1 0; min-width:0; }
+  blockquote { margin:1rem 0; padding:.1rem 1rem; border-left:4px solid var(--accent); background:var(--code); }
+  table { border-collapse:collapse; margin:1rem 0; }
+  th,td { border:1px solid var(--line); padding:.4rem .8rem; text-align:left; }
+  details.snippet pre { white-space:pre-wrap; word-break:break-word; }
   pre code { background:none; padding:0; font-size:.85em; }
   details.snippet { border:1px solid var(--line); border-radius:6px; margin:1rem 0; }
   details.snippet > summary { cursor:pointer; padding:.6rem 1rem; font-weight:600; color:var(--muted); list-style:none; }

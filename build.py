@@ -10,6 +10,7 @@ Handles:
 """
 import html
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -99,17 +100,22 @@ def convert(path):
         TEMPLATE.replace("{{title}}", html.escape(title))
         .replace("{{body}}", f"<h1>{html.escape(title)}</h1>\n{rendered}")
     )
-    SITE.mkdir(exist_ok=True)
-    (SITE / f"{slug}.html").write_text(page, encoding="utf-8")
-    return slug, title
+    if path.parent == CONTENT:  # flat: content/<slug>.md -> site/<slug>.html
+        href, target = f"{slug}.html", SITE / f"{slug}.html"
+    else:  # folder: content/<slug>/<slug>.md -> site/<slug>/index.html (+ assets)
+        shutil.copytree(path.parent, SITE / slug, dirs_exist_ok=True, ignore=shutil.ignore_patterns("*.md"))
+        href, target = f"{slug}/", SITE / slug / "index.html"
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(page, encoding="utf-8")
+    return href, title
 
 
 def main():
-    files = sorted(CONTENT.glob("*.md"))
+    files = sorted(CONTENT.glob("*.md")) + sorted(CONTENT.glob("*/*.md"))
     if not files:
         sys.exit("no markdown files found in content/")
     pages = [convert(f) for f in files]
-    links = "\n".join(f'<li><a href="{s}.html">{html.escape(t)}</a></li>' for s, t in pages)
+    links = "\n".join(f'<li><a href="{s}">{html.escape(t)}</a></li>' for s, t in pages)
     index = (
         TEMPLATE.replace("{{title}}", "Exercises")
         .replace("{{body}}", f"<h1>Exercises</h1><ul>{links}</ul>")
