@@ -83,6 +83,12 @@ We've created one already for this particular scenario we're building. Read the 
 > - Which sentence in the prompt stops the agent from inventing numbers?
 > - What would happen without it?
 
+{{< answer >}}
+**Sentence:** *"Never present a guessed or estimated number (e.g. a currency conversion you made up) as if it were a verified result."* It is backed up by *"do not silently substitute an estimate or guess and continue as if it had succeeded"* and by *"Use tools for all facts about this case"*.
+
+**Without it:** when a tool fails or returns incomplete data, the agent could fill the gap with a plausible but invented price, fare delta or conversion rate. The re-plan would look complete, but the policy-limit check would rest on made-up numbers and a human reviewer could not tell.
+{{< /answer >}}
+
 Afterwards copy and paste it into the *System prompt* field.
 
 ![](image7.png)
@@ -101,10 +107,26 @@ Please read and paste the following user prompt into the *User prompt* field.
 >
 > Why would you use process variables in the user prompt, and not in the system prompt?
 
+{{< answer >}}
+The system prompt is static: it defines the role, rules and behavior, and is the same for every process instance. The user prompt is the actual request, so it carries the data that changes per case (`problemDescription`, `tripDisruption`, `policyRules`, and `tripJudgeReason` after a rejected attempt).
+
+Keeping data out of the system prompt keeps it reusable and easy to maintain, and separates instructions from case data. It also lets a feedback loop add a new user prompt with the rejection reason without changing the agent's rules.
+{{< /answer >}}
+
 ![](image8.png)
 
 {{< snippet User-prompt >}}
-"A traveler's trip has been disrupted. Re-weave their itinerary to resolve it, using the tools available to you. Traveler's problem description: " + problemDescription + " Trip and traveler context: " + string(tripDisruption) + "Policy limits: " + string(policyRules) + (if tripJudgeReason is defined() then " A previous attempt at this case was reviewed and rejected. Reason: " + tripJudgeReason + " Address that specific objection. Do not repeat the plan that was rejected." else "")
+"A traveler's trip has been disrupted. Re-weave their itinerary to resolve it, using the tools available to you. Traveler's problem description: "
+  + problemDescription
+  + " Trip and traveler context: "
+  + string(tripDisruption)
+  + "Policy limits: "
+  + string(policyRules)
+  + (if tripJudgeReason is defined() then
+      " A previous attempt at this case was reviewed and rejected. Reason: "
+        + tripJudgeReason
+        + " Address that specific objection. Do not repeat the plan that was rejected."
+    else "")
 {{< /snippet >}}
 
 ### 6. Complete configurations
@@ -124,6 +146,10 @@ For output mapping, we just need to set the result variable. This contains the L
 > **Question**
 >
 > When would you use JSON rather than Text?
+
+{{< answer >}}
+Use **Text** when the result is meant to be read by a person, like the final summary of this exercise. Use **JSON** when downstream elements must read individual fields from the answer, for example to map them into process variables or to use them in gateway conditions. JSON gives a predictable structure, text does not.
+{{< /answer >}}
 
 ![](image10.png)
 
@@ -153,6 +179,10 @@ If everything worked correctly, after some time, you should see that the process
 > **Question**
 >
 > What tools did your agent use in your execution?
+
+{{< answer >}}
+It varies between runs, as the agent decides which tools to call and how often (the same tool can be called several times with different inputs). To see it, open the process instance in Operate and look at the elements that were executed inside the AI agent sub-process in the instance history.
+{{< /answer >}}
 
 Also, have a look at your inbox for the email address you used for the test case. If you see an email from [ilt-training@camunda.com](mailto:ilt-training@camunda.com), nice job, you have completed the exercise correctly.
 

@@ -26,6 +26,7 @@ SNIPPET = re.compile(
     r"\{\{<\s*snippet\s+(?P<name>[^\s>]+)\s*>\}\}(?P<body>.*?)\{\{<\s*/snippet\s*>\}\}",
     re.DOTALL,
 )
+ANSWER = re.compile(r"\{\{<\s*answer\s*>\}\}(?P<body>.*?)\{\{<\s*/answer\s*>\}\}", re.DOTALL)
 FENCE = re.compile(r"\A\s*```[\w-]*\n(.*?)\n```\s*\Z", re.DOTALL)
 
 
@@ -88,7 +89,13 @@ def convert(path):
         blocks.append(snippet_html(m.group("name"), m.group("body"), lang))
         return f"\n\nSNIPPETPLACEHOLDER{len(blocks) - 1}END\n\n"
 
+    def stash_answer(m):
+        inner = markdown.markdown(m.group("body").strip(), extensions=["sane_lists"])
+        blocks.append(f'<details class="answer"><summary>Show answer</summary>{inner}</details>')
+        return f"\n\nSNIPPETPLACEHOLDER{len(blocks) - 1}END\n\n"
+
     body = SNIPPET.sub(stash, body)
+    body = ANSWER.sub(stash_answer, body)
 
     rendered = markdown.markdown(
         body, extensions=["fenced_code", "tables", "sane_lists"]
