@@ -115,6 +115,17 @@ When you cannot make further progress on your own, hand the case to a person rat
 Once you have finished calling tools, write a plain-language final answer for the human reviewing this case: a clear summary of what was found and done, any open questions or missing information, and the proposed resolution. Do not use XML tags or other markup to separate your reasoning from your answer. Never end the conversation mid-sentence, and never end it without either calling a tool or writing a final answer."
 {{< /snippet >}}
 
+{{< quiz >}}
+What does the system prompt define?
+
+- [ ] The concrete request for this case, including the traveler's problem.
+    That is the user prompt, which you add in the next step.
+- [x] The behavior and goal of the agent, including how it reasons about tools and when to stop.
+    Correct: it is the standing instruction set that shapes every decision the agent makes.
+- [ ] The credentials used to call the model.
+    Those are set in the model provider section (region, access key and secret key).
+{{< /quiz >}}
+
 ### 5. Add user prompt
 
 Next we need to add the user prompt. The user prompt is the actual request sent to the LLM. It is the initial ask or a follow-up in a feedback loop. It's added to conversation memory and supports FEEL expressions.
@@ -221,3 +232,17 @@ Also, have a look at your inbox for the email address you used for the test case
 
 - Ad-hoc subprocesses: [https://docs.camunda.io/docs/components/modeler/bpmn/ad-hoc-subprocesses/](https://docs.camunda.io/docs/components/modeler/bpmn/ad-hoc-subprocesses/)
 - AI Agent Sub-process connector: [https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/](https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/)
+
+## Callout examples (demo)
+
+!!! info "Info"
+    Use an info box for neutral background knowledge, for example how a feature works.
+
+!!! tip "Tip"
+    Use a tip box for a shortcut or a best practice. Inline `code` and **bold** work too.
+
+!!! warning "Warning"
+    Use a warning box when a step can go wrong, for example if a value is pasted into the wrong field.
+
+??? info "Collapsed box (click to open)"
+    The `???` marker makes the box collapsed by default. Use `???+` to start it open.

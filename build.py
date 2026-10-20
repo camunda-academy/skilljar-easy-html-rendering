@@ -12,6 +12,7 @@ import html
 import re
 import shutil
 import sys
+import textwrap
 from pathlib import Path
 
 import markdown
@@ -27,6 +28,15 @@ SNIPPET = re.compile(
     re.DOTALL,
 )
 ANSWER = re.compile(r"\{\{<\s*answer\s*>\}\}(?P<body>.*?)\{\{<\s*/answer\s*>\}\}", re.DOTALL)
+QUIZ = re.compile(r"\{\{<\s*quiz\s*>\}\}(?P<body>.*?)\{\{<\s*/quiz\s*>\}\}", re.DOTALL)
+QUIZ_OPTION = re.compile(r"^- \[( |x|X)\] ?(.*)$")
+# Same syntax as the official converter: !!! type "Title" (always open), ??? (collapsed), ???+ (open).
+ADMONITION = re.compile(
+    r'^(?P<marker>!!!|\?\?\?\+?)[ \t]+(?P<type>\w+)(?:[ \t]+"(?P<title>[^"\n]*)")?[ \t]*\n'
+    r"(?P<body>(?:(?:[ ]{4}|\t)[^\n]*(?:\n|\Z)|[ \t]*\n)+)",
+    re.MULTILINE,
+)
+CALLOUT_TYPES = {"info", "note", "tip", "warning", "danger", "success"}
 FENCE = re.compile(r"\A\s*```[\w-]*\n(.*?)\n```\s*\Z", re.DOTALL)
 
 
@@ -74,6 +84,53 @@ def snippet_html(name, body, lang):
     )
 
 
+def inline_md(text):
+    return re.sub(r"\A<p>|</p>\Z", "", markdown.markdown(text.strip()).strip())
+
+
+def quiz_html(body, qid):
+    """Single-choice quiz: question text, then `- [ ]` / `- [x]` options with indented feedback."""
+    question, options = [], []
+    for line in body.strip("\n").splitlines():
+        m = QUIZ_OPTION.match(line)
+        if m:
+            options.append([m.group(1).lower() == "x", m.group(2), []])
+        elif options:
+            options[-1][2].append(line.strip())
+        else:
+            question.append(line)
+    if len(options) < 2 or sum(o[0] for o in options) != 1:
+        sys.exit(f"quiz #{qid}: needs 2+ options and exactly one [x]:\n{body.strip()[:80]}")
+    items = "".join(
+        f'<div class="quiz-opt" data-correct="{int(ok)}"><label>'
+        f'<input type="radio" name="quiz{qid}"><span>{inline_md(answer)}</span></label>'
+        f'<div class="quiz-fb" role="status" hidden>{markdown.markdown(chr(10).join(fb).strip(), extensions=["sane_lists"])}</div></div>'
+        for ok, answer, fb in options
+    )
+    q = markdown.markdown("\n".join(question).strip(), extensions=["fenced_code", "sane_lists"])
+    return f'<div class="quiz" role="group" aria-labelledby="quiz{qid}q"><div class="quiz-q" id="quiz{qid}q">{q}</div>{items}</div>'
+
+
+def admonition_html(m):
+    kind = m.group("type").lower()
+    kind = kind if kind in CALLOUT_TYPES else "note"
+    title = m.group("title")
+    title = kind.capitalize() if title is None else title
+    inner = markdown.markdown(
+        textwrap.dedent(m.group("body")).strip("\n"),
+        extensions=["fenced_code", "tables", "sane_lists"],
+    )
+    label = html.escape(title)
+    if m.group("marker") == "!!!":
+        head = f'<div class="callout-title">{label}</div>' if title else ""
+        return f'<div class="callout callout-{kind}">{head}<div class="callout-body">{inner}</div></div>'
+    opened = " open" if m.group("marker").endswith("+") else ""
+    return (
+        f'<details class="callout callout-{kind}"{opened}><summary class="callout-title">{label or kind.capitalize()}'
+        f'</summary><div class="callout-body">{inner}</div></details>'
+    )
+
+
 def convert(path):
     stem_parts = path.name[: -len(".md")].split(".")
     slug = stem_parts[0]
@@ -94,7 +151,17 @@ def convert(path):
         blocks.append(f'<details class="answer"><summary>Show answer</summary>{inner}</details>')
         return f"\n\nSNIPPETPLACEHOLDER{len(blocks) - 1}END\n\n"
 
+    def stash_quiz(m):
+        blocks.append(quiz_html(m.group("body"), len(blocks)))
+        return f"\n\nSNIPPETPLACEHOLDER{len(blocks) - 1}END\n\n"
+
+    def stash_admonition(m):
+        blocks.append(admonition_html(m))
+        return f"\n\nSNIPPETPLACEHOLDER{len(blocks) - 1}END\n\n"
+
+    body = ADMONITION.sub(stash_admonition, body)
     body = SNIPPET.sub(stash, body)
+    body = QUIZ.sub(stash_quiz, body)
     body = ANSWER.sub(stash_answer, body)
 
     rendered = markdown.markdown(

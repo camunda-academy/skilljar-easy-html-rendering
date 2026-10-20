@@ -32,6 +32,34 @@
   details.answer { border:1px dashed var(--line); border-radius:6px; margin:1rem 0; }
   details.answer > summary { cursor:pointer; padding:.45rem 1rem; font-weight:500; font-size:.92em; color:var(--accent); }
   details.answer > :not(summary) { margin-left:1rem; margin-right:1rem; }
+  .callout { --c:#00a7b5; --bg:#e6f6f8; border:1px solid var(--line); border-left:4px solid var(--c); border-radius:6px; background:var(--bg); margin:1.2rem 0; padding:.1rem 1rem .1rem 1rem; }
+  .callout-tip { --c:#1fa463; --bg:#e8f7ef; }
+  .callout-warning { --c:#e0861a; --bg:#fff4e3; }
+  .callout-danger { --c:#d92d20; --bg:#fdeceb; }
+  .callout-success { --c:#1fa463; --bg:#e8f7ef; }
+  .callout-title { font-weight:600; padding:.6rem 0 0; }
+  .callout-title::before { content:"\2139\FE0F"; margin-right:.5rem; }
+  .callout-tip > .callout-title::before { content:"\1F4A1"; }
+  .callout-warning > .callout-title::before, .callout-danger > .callout-title::before { content:"\26A0\FE0F"; }
+  .callout-success > .callout-title::before { content:"\2705"; }
+  .callout-note > .callout-title::before { content:"\1F4DD"; }
+  details.callout > summary { cursor:pointer; padding:.6rem 0; }
+  details.callout[open] > summary { padding-bottom:0; }
+  .callout-body > :first-child { margin-top:.4rem; }
+  .callout-body > :last-child { margin-bottom:.8rem; }
+  .quiz { --ok:#1a7f37; --ok-bg:#e9f7ee; --bad:#cf222e; --bad-bg:#fdeceb; border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:6px; padding:.2rem 1rem .8rem; margin:1.2rem 0; background:var(--bg); }
+  .quiz-q { font-weight:600; }
+  .quiz-opt { border:1px solid var(--line); border-radius:6px; margin:.5rem 0; }
+  .quiz-opt > label { display:flex; gap:.6rem; align-items:flex-start; padding:.55rem .8rem; cursor:pointer; }
+  .quiz-opt > label input { margin-top:.3rem; }
+  .quiz-opt:hover { border-color:var(--accent); }
+  .quiz-opt.correct { border-color:var(--ok); background:var(--ok-bg); }
+  .quiz-opt.wrong { border-color:var(--bad); background:var(--bad-bg); }
+  .quiz-opt.correct > label::after { content:"\2713  Correct"; margin-left:auto; color:var(--ok); font-weight:600; white-space:nowrap; }
+  .quiz-opt.wrong > label::after { content:"\2717  Not quite"; margin-left:auto; color:var(--bad); font-weight:600; white-space:nowrap; }
+  .quiz-fb { padding:0 .8rem .2rem 2.3rem; }
+  .quiz-fb[hidden] { display:none; }
+  .quiz-fb p { margin:.1rem 0 .5rem; }
   details.snippet > pre { position:relative; padding-right:5rem; }
   .copy { position:absolute; top:.5rem; right:.5rem; font:inherit; font-size:.85em; padding:.2rem .6rem; border:1px solid var(--line); border-radius:4px; background:var(--bg); color:var(--fg); cursor:pointer; }
   .copy:hover { border-color:var(--accent); color:var(--accent); }
@@ -49,6 +77,19 @@
 {{body}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script>hljs.highlightAll();</script>
+<script>
+document.querySelectorAll(".quiz").forEach(function (quiz) {
+  quiz.addEventListener("change", function (e) {
+    var chosen = e.target.closest(".quiz-opt");
+    quiz.querySelectorAll(".quiz-opt").forEach(function (opt) {
+      var on = opt === chosen;
+      opt.classList.toggle("correct", on && opt.dataset.correct === "1");
+      opt.classList.toggle("wrong", on && opt.dataset.correct !== "1");
+      opt.querySelector(".quiz-fb").hidden = !on;
+    });
+  });
+});
+</script>
 <script>
 document.querySelectorAll("details.snippet > pre").forEach(function (pre) {
   var btn = document.createElement("button");
