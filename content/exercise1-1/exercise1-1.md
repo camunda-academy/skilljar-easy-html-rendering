@@ -153,6 +153,13 @@ Configure the memory section as shown:
 
 ![](image9.png)
 
+| Section | Field | Value |
+| :---- | :---- | :---- |
+| Memory | Agent context | `agent.context` |
+| Memory | Memory storage type | In Process (part of agent context) |
+| Memory | Context window size | `40` |
+| Limits | Maximum model calls | `25` |
+
 The response and output mapping sections are the last ones we'll fill in. The *Response* section configures the response format. It is how the model should return its output (text or JSON) and how the connector processes the returned response.
 
 For output mapping, we just need to set the result variable. This contains the LLM response so downstream elements can use the result or feed the context back in for a follow-up call. Please make sure the *response* is the same as the image below.
@@ -166,6 +173,14 @@ Use **Text** when the result is meant to be read by a person, like the final sum
 {{< /answer >}}
 
 ![](image10.png)
+
+| Section | Field | Value |
+| :---- | :---- | :---- |
+| Response | Response format | Text |
+| Response | Parse text as JSON | unchecked |
+| Response | Include assistant message | unchecked |
+| Response | Include agent context | checked |
+| Output mapping | Result variable | `agent` |
 
 ## Testing
 
@@ -184,7 +199,7 @@ Next we need to test that we've set up everything correctly. To do that, we'll u
 
     ![](image13.png)
 
-5. Click *Apply* and the test case should run. Now click the Process instance key to open Operate and monitor the execution.
+5. Click *Apply* and the test case should run. Now click the Process instance key to open Operate and monitor the execution. Look at which elements inside the *Re-plan trip* sub-process were executed and in which order: this shows what the agent decided to do. You will need it for the last question.
 
     ![](image14.png)
 
