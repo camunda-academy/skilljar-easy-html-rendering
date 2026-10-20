@@ -30,7 +30,6 @@
   table { border-collapse:collapse; margin:1rem 0; }
   th,td { border:1px solid var(--line); padding:.4rem .8rem; text-align:left; }
   details.answer { border:1px dashed var(--line); border-radius:6px; margin:1rem 0; }
-  details.answer > summary { cursor:pointer; padding:.45rem 1rem; font-weight:500; font-size:.92em; color:var(--accent); }
   details.answer > :not(summary) { margin-left:1rem; margin-right:1rem; }
   .callout { --c:#00a7b5; --bg:#e6f6f8; border:1px solid var(--line); border-left:4px solid var(--c); border-radius:6px; background:var(--bg); margin:1.2rem 0; padding:.1rem 1rem .1rem 1rem; }
   .callout-tip { --c:#1fa463; --bg:#e8f7ef; }
@@ -43,13 +42,9 @@
   .callout-warning > .callout-title::before, .callout-danger > .callout-title::before { content:"\26A0\FE0F"; }
   .callout-success > .callout-title::before { content:"\2705"; }
   .callout-note > .callout-title::before { content:"\1F4DD"; }
-  details.callout > summary { cursor:pointer; padding:.6rem 0; }
-  details.callout[open] > summary { padding-bottom:0; }
   .callout-body > :first-child { margin-top:.4rem; }
   .callout-body > :last-child { margin-bottom:.8rem; }
   details.quiz-box { --ok:#1a7f37; --ok-bg:#e9f7ee; --bad:#cf222e; --bad-bg:#fdeceb; border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:6px; padding:0 1rem; margin:1.2rem 0; background:var(--bg); font-size:.9em; }
-  details.quiz-box > summary { cursor:pointer; font-weight:600; padding:.6rem 0; }
-  details.quiz-box[open] > summary { padding-bottom:0; }
   .quiz { padding-bottom:.8rem; }
   .quiz-q { font-weight:600; }
   .quiz-opt { border:1px solid var(--line); border-radius:6px; margin:.5rem 0; }
@@ -69,10 +64,17 @@
   details.snippet pre { white-space:pre-wrap; word-break:break-word; }
   pre code { background:none; padding:0; font-size:.85em; }
   details.snippet { border:1px solid var(--line); border-radius:6px; margin:1rem 0; }
-  details.snippet > summary { cursor:pointer; padding:.6rem 1rem; font-weight:600; color:var(--muted); list-style:none; }
-  details.snippet > summary::before { content:"\25B6"; display:inline-block; margin-right:.6rem; font-size:.75em; transition:transform .15s; }
-  details.snippet[open] > summary::before { transform:rotate(90deg); }
-  details.snippet > summary::-webkit-details-marker { display:none; }
+  details.snippet > summary, details.answer > summary, details.quiz-box > summary, details.callout > summary { display:flex; align-items:center; gap:.6rem; list-style:none; cursor:pointer; font-weight:600; font-size:.95em; color:var(--fg); }
+  details > summary::-webkit-details-marker { display:none; }
+  details.snippet > summary, details.answer > summary { padding:.6rem 1rem; }
+  details.quiz-box > summary, details.callout > summary { padding:.6rem 0; }
+  details.quiz-box[open] > summary, details.callout[open] > summary { padding-bottom:0; }
+  details.snippet > summary::after, details.answer > summary::after, details.quiz-box > summary::after, details.callout > summary::after { content:"\25B6"; margin-left:auto; font-size:.7em; color:var(--muted); transition:transform .15s; }
+  details[open] > summary::after { transform:rotate(90deg); }
+  details.snippet > summary::before { content:"\1F4CB"; }
+  details.answer > summary::before { content:"\1F511"; }
+  details.quiz-box > summary::before { content:"\1F3AF"; }
+  details.callout > summary::before { margin-right:0; }
   details.snippet > pre { margin:0; border:0; border-top:1px solid var(--line); border-radius:0 0 6px 6px; }
 </style>
 </head>
